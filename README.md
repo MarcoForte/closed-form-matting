@@ -13,6 +13,13 @@ Python implementation of A. Levin D. Lischinski and Y. Weiss. A Closed Form Solu
 - mylambda (λ) is a constant controlling the users confidence in the constraints.
 - eps (ε) is a constant controlling the smoothness of alpha.
 
+
+### Results
+![Original image](https://github.com/MarcoForte/closed-form-matting/blob/master/dandelion_clipped.bmp)
+![Scribbled image](https://github.com/MarcoForte/closed-form-matting/blob/master/dandelion_clipped_m.bmp)
+![Result](https://github.com/MarcoForte/closed-form-matting/blob/master/dandelion_clipped_alpha.bmp)
+
+
 ### More Information
 
 For more information see the orginal paper  http://www.wisdom.weizmann.ac.il/~levina/papers/Matting-Levin-Lischinski-Weiss-CVPR06.pdf
