@@ -53,7 +53,7 @@ def closed_form_matte(img, scribbled_img, mylambda=100):
     b_s[fgInds] = 1
     
     L = computeLaplacian(img/255)
-    sD_s = scipy.sparse.spdiags(D_s, 0, h*w, h*w)
+    sD_s = scipy.sparse.diags(D_s)
 
     x = scipy.sparse.linalg.spsolve(L + mylambda*sD_s, mylambda*b_s)
     alpha = np.minimum(np.maximum(x.reshape(h,w),0),1)
