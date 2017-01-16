@@ -1,7 +1,5 @@
 import numpy as np
-import scipy.misc
 import scipy.sparse
-from skimage.color import rgb2gray
 from numpy.lib.stride_tricks import as_strided
 
 
@@ -69,5 +67,7 @@ def main():
    
     plt.show()
 if __name__ == "__main__":
+    import scipy.misc
+    from skimage.color import rgb2gray
     import matplotlib.pyplot as plt
     main()
