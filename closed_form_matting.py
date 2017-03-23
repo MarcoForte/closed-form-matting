@@ -1,3 +1,5 @@
+from __future__ import division
+
 import numpy as np
 import scipy.sparse
 from numpy.lib.stride_tricks import as_strided
