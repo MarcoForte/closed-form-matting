@@ -37,9 +37,11 @@ def computeLaplacian(img, eps = 10**(-7), win_rad=1):
     nz_indsRow = np.repeat(win_inds, win_size).ravel()
     nz_indsVal = vals.ravel()
     L = scipy.sparse.coo_matrix((nz_indsVal, (nz_indsRow, nz_indsCol)), shape=(h*w, h*w))
+
+    sumL = L.sum(axis=1).T.tolist()[0]
+    L = scipy.sparse.diags([sumL], [0], shape=(w*h, w*h)) - L
+
     return L
-
-
 
 def closed_form_matte(img, scribbled_img, mylambda=100):
     h, w, c = img.shape
@@ -51,19 +53,25 @@ def closed_form_matte(img, scribbled_img, mylambda=100):
     D_s[bgInds] = 1
     b_s = np.zeros(h*w)
     b_s[fgInds] = 1
-    
+    print("Computing Matting Laplacian")
     L = computeLaplacian(img/255)
     sD_s = scipy.sparse.diags(D_s)
-
+    print("Solving for alpha")
     x = scipy.sparse.linalg.spsolve(L + mylambda*sD_s, mylambda*b_s)
     alpha = np.minimum(np.maximum(x.reshape(h,w),0),1)
     return alpha
 
 def main():
-    img = scipy.misc.imread("dandelion_clipped.bmp")
-    scribbled_img = scipy.misc.imread("dandelion_clipped_m.bmp")
+    img_name = 'dandelion_clipped.bmp'
+    scribble_img_name = 'dandelion_clipped_m.bmp'
+    alpha_img_name = 'dandelion_clipped_alpha.bmp'
+    print("Loading images ",img_name, scribble_img_name)
+    img = scipy.misc.imread(img_name)
+    scribbled_img = scipy.misc.imread(scribble_img_name)
+    print("Computing alpha")
     alpha = closed_form_matte(img, scribbled_img)
-    scipy.misc.imsave('dandelion_clipped_alpha.bmp',alpha)
+    print("Saving alpha to ", alpha_img_name)
+    scipy.misc.imsave(alpha_img_name,alpha)
     plt.title("Alpha matte")
     plt.imshow(alpha, cmap='gray')
    
