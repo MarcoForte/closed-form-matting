@@ -22,6 +22,16 @@ Python implementation of A. Levin D. Lischinski and Y. Weiss. A Closed Form Solu
 
 ### More Information
 
+This version of matting laplacian does not support computation over only unknown regions. The computation is generally faster than the matlab version regardless thanks to more vectorisation.   
+Note. The computed laplacian is slightly different due to array ordering in numpy being different than in matlab. To get same laplacian as in matlab change,
+
+`indsM = np.arange(h*w).reshape((h, w))`  
+`ravelImg = img.reshape(h*w, d)`  
+to   
+`indsM = np.arange(h*w).reshape((h, w), order='F')`   
+`ravelImg = img.reshape(h*w, d, , order='F')`.  
+Again note that this will result in incorrect alpha if the `D_s, b_s` orderings are not also changed to `order='F'F`.
+
 For more information see the orginal paper  http://www.wisdom.weizmann.ac.il/~levina/papers/Matting-Levin-Lischinski-Weiss-CVPR06.pdf
 The original matlab code is here http://www.wisdom.weizmann.ac.il/~levina/matting.tar.gz
 
