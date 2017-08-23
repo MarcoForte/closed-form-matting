@@ -16,7 +16,7 @@ def computeLaplacian(img, eps=10**(-7), win_rad=1):
     win_size = (win_rad*2+1)**2
     h, w, d = img.shape
     # Number of window centre indices in h, w axes
-    c_h, c_w = h - win_rad - 1, w - win_rad - 1
+    c_h, c_w = h - 2*win_rad, w - 2*win_rad
     win_diam = win_rad*2+1
 
     indsM = np.arange(h*w).reshape((h, w))
