@@ -39,8 +39,6 @@ The original matlab code is here http://www.wisdom.weizmann.ac.il/~levina/mattin
 
 The code is free for academic/research purpose. Use at your own risk and we are not responsible for any loss resulting from this code. Feel free to submit pull request for bug fixes.
 
-### Contact 
-[Marco Forte](https://marcoforte.github.io/) (fortem@tcd.ie)  
 
 Original authors:  
 [Anat Levin](http://www.wisdom.weizmann.ac.il/~levina/) (anat.levin@weizmann.ac.il)
