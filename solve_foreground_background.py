@@ -16,7 +16,7 @@ The code can be used in two ways:
             ...
             foreground, background = solve_foregound_background(image, alpha)
         ```
-    2. From command line (requires opencv-python):
+    2. From command line:
         ```
             ./solve_foregound_background.py image.png alpha.png foreground.png background.png
         ```
@@ -74,7 +74,7 @@ def get_const_conditions(image, alpha):
     return conditions, right_hand
 
 
-def solve_foregound_background(image, alpha):
+def solve_foreground_background(image, alpha):
     """Compute foreground and background image given source image and transparency map."""
 
     consts = (alpha < CONST_ALPHA_MARGIN) | (alpha > 1.0 - CONST_ALPHA_MARGIN)
@@ -144,7 +144,7 @@ def main():
 
     image = cv2.imread(args.image) / 255.0
     alpha = cv2.imread(args.alpha, 0) / 255.0
-    foreground, background = solve_foregound_background(image, alpha)
+    foreground, background = solve_foreground_background(image, alpha)
     cv2.imwrite(args.foreground, foreground * 255.0)
     if args.background:
         cv2.imwrite(args.background, background * 255.0)
