@@ -79,17 +79,17 @@ def solve_foreground_background(image, alpha):
 
     consts = (alpha < CONST_ALPHA_MARGIN) | (alpha > 1.0 - CONST_ALPHA_MARGIN)
     grad = get_grad_operator(~consts)
-    grad_weights = np.power(np.abs(grad @ alpha.flatten()), 0.5)
+    grad_weights = np.power(np.abs(grad * alpha.flatten()), 0.5)
 
     grad_only_positive = grad.maximum(0)
-    grad_weights_f = grad_weights + 0.003 * grad_only_positive @ (1.0 - alpha.flatten())
-    grad_weights_b = grad_weights + 0.003 * grad_only_positive @ alpha.flatten()
+    grad_weights_f = grad_weights + 0.003 * grad_only_positive * (1.0 - alpha.flatten())
+    grad_weights_b = grad_weights + 0.003 * grad_only_positive * alpha.flatten()
 
     grad_pad = scipy.sparse.coo_matrix(grad.shape)
 
     smoothness_conditions = scipy.sparse.vstack((
-        scipy.sparse.hstack((__spdiagonal(grad_weights_f) @ grad, grad_pad)),
-        scipy.sparse.hstack((grad_pad, __spdiagonal(grad_weights_b) @ grad))
+        scipy.sparse.hstack((__spdiagonal(grad_weights_f) * grad, grad_pad)),
+        scipy.sparse.hstack((grad_pad, __spdiagonal(grad_weights_b) * grad))
     ))
 
     composite_conditions = scipy.sparse.hstack((
@@ -114,7 +114,7 @@ def solve_foreground_background(image, alpha):
 
     b_composite = image.reshape(alpha.size, -1)
 
-    right_hand = non_zero_conditions.transpose() @ np.concatenate((b_composite,
+    right_hand = non_zero_conditions.transpose() * np.concatenate((b_composite,
                                                                    b_const_f,
                                                                    b_const_b))
 
@@ -122,11 +122,11 @@ def solve_foreground_background(image, alpha):
         non_zero_conditions,
         smoothness_conditions
     ))
-    left_hand = conditons.transpose() @ conditons
+    left_hand = conditons.transpose() * conditons
 
-    solution = scipy.sparse.linalg.spsolve(left_hand, right_hand).reshape(2, *alpha.shape, -1)
-    foreground = solution[0, :, :, :].reshape(*alpha.shape, -1)
-    background = solution[1, :, :, :].reshape(*alpha.shape, -1)
+    solution = scipy.sparse.linalg.spsolve(left_hand, right_hand).reshape(2, *image.shape)
+    foreground = solution[0, :, :, :].reshape(*image.shape)
+    background = solution[1, :, :, :].reshape(*image.shape)
     return foreground, background
 
 
