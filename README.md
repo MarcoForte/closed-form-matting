@@ -7,8 +7,6 @@ The repository also contains implementation of background/foreground reconstruct
 - python 3.5+ (Though it should run on 2.7)
 - scipy
 - numpy
-- matplotlib
-- sklearn
 - opencv-python
 
 
