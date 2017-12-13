@@ -7,55 +7,68 @@ The repository also contains implementation of background/foreground reconstruct
 - python 3.5+ (Though it should run on 2.7)
 - scipy
 - numpy
-- matplotlib
-- sklearn
-- opencv-python (for CLI of `solve_foregound_background.py`)
+- opencv-python
 
 
 ## Usage
 
 ### Closed-Form matting
-- mylambda (λ) is a constant controlling the users confidence in the constraints.
-- eps (ε) is a constant controlling the smoothness of alpha.
-
-Running the demo:
+CLI inerface:
 
 ```bash
-python closed_form_matting.py
+# Scribbles input
+./closed_form_matting.py input_image.png -s scribbles_image.png  -o output_alpha.png
+
+# Trimap input
+./closed_form_matting.py input_image.png -t scribbles_image.png  -o output_alpha.png
+
+# Add flag --solve-fg to compute foreground color and output RGBA image instead
+# of alpha.
 ```
+
 
 Python interface:
 
 ```python
-from closed_form_matting import closed_form_matte
+import closed_form_matting
 ...
-alpha = closed_form_matte(image, scribbled_img)
+# For scribles input
+alpha = closed_form_matting.closed_form_matting_with_scribbles(image, scribbles)
+
+# For trimap input
+alpha = closed_form_matting.closed_form_matting_with_trimap(image, trimap)
+
+# For prior with confidence
+alpha = closed_form_matting.closed_form_matting_with_prior(
+    image, prior, prior_confidence, optional_const_mask)
+
+# To get Matting Laplacian for image
+laplacian = compute_laplacian(image, optional_const_mask)
 ```
 
 ### Foreground and Background Reconstruction
 CLI interface (requires opencv-python):
 
 ```bash
-./solve_foregound_background.py image.png alpha.png foreground.png background.png
+./solve_foreground_background.py image.png alpha.png foreground.png background.png
 ```
 
 Python interface:
 
 ```python
-from solve_foregound_background import solve_foregound_background
+from solve_foreground_background import solve_foreground_background
 ...
-foreground, background = solve_foregound_background(image, alpha)
+foreground, background = solve_foreground_background(image, alpha)
 ```
 
 ## Results
-![Original image](https://github.com/MarcoForte/closed-form-matting/blob/master/dandelion_clipped.bmp)
-![Scribbled image](https://github.com/MarcoForte/closed-form-matting/blob/master/dandelion_clipped_m.bmp)
-![Result](https://github.com/MarcoForte/closed-form-matting/blob/master/dandelion_clipped_alpha.bmp)
+| Original image   | Scribbled image | Output alpha | Output foreground |
+|------------------|-----------------|--------------|-------------------|
+| ![Original image](testdata/source.png) | ![Scribbled image](testdata/scribbles.png) | ![Output alpha](testdata/output_alpha.png) | ![Output foreground](testdata/output_foreground.png) |
 
 
 ## More Information
-
-This version of matting laplacian does not support computation over only unknown regions. The computation is generally faster than the matlab version regardless thanks to more vectorisation.
+The computation is generally faster than the matlab version thanks to more vectorization.
 Note. The computed laplacian is slightly different due to array ordering in numpy being different than in matlab. To get same laplacian as in matlab change,
 
 `indsM = np.arange(h*w).reshape((h, w))`
@@ -65,7 +78,7 @@ to
 `ravelImg = img.reshape(h*w, d, , order='F')`.
 Again note that this will result in incorrect alpha if the `D_s, b_s` orderings are not also changed to `order='F'F`.
 
-For more information see the orginal paper  http://www.wisdom.weizmann.ac.il/~levina/papers/Matting-Levin-Lischinski-Weiss-CVPR06.pdf
+For more information see the original paper  http://www.wisdom.weizmann.ac.il/~levina/papers/Matting-Levin-Lischinski-Weiss-CVPR06.pdf
 The original matlab code is here http://www.wisdom.weizmann.ac.il/~levina/matting.tar.gz
 
 ## Disclaimer
