@@ -1,4 +1,5 @@
 # Closed-Form Matting
+[![Build Status](https://travis-ci.org/MarcoForte/closed-form-matting.svg?branch=master)](https://travis-ci.org/MarcoForte/closed-form-matting)
 
 
 Python implementation of image matting method proposed in A. Levin D. Lischinski and Y. Weiss. A Closed Form Solution to Natural Image Matting. IEEE Conf. on Computer Vision and Pattern Recognition (CVPR), June 2006, New York
