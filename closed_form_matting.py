@@ -84,10 +84,11 @@ def compute_laplacian(img, mask=None, eps=10**(-7), win_rad=1):
             np.ones((win_diam, win_diam), np.uint8)
         ).astype(np.bool)
         win_mask = np.sum(mask.ravel()[win_inds], axis=2)
+        win_inds = win_inds[win_mask > 0, :]
     else:
         win_inds = win_inds.reshape(-1, win_size)
 
-    win_inds = win_inds[win_mask > 0, :]
+    
     winI = ravelImg[win_inds]
 
     win_mu = np.mean(winI, axis=1, keepdims=True)
