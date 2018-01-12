@@ -97,7 +97,7 @@ def compute_laplacian(img, mask=None, eps=10**(-7), win_rad=1):
     inv = np.linalg.inv(win_var + (eps/win_size)*np.eye(3))
 
     X = np.einsum('...ij,...jk->...ik', winI - win_mu, inv)
-    vals = np.eye(win_size) - (1/win_size)*(1 + np.einsum('...ij,...kj->...ik', X, winI - win_mu))
+    vals = np.eye(win_size) - (1.0/win_size)*(1 + np.einsum('...ij,...kj->...ik', X, winI - win_mu))
 
     nz_indsCol = np.tile(win_inds, win_size).ravel()
     nz_indsRow = np.repeat(win_inds, win_size).ravel()
