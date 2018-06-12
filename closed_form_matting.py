@@ -185,7 +185,7 @@ def main():
         scribbles = cv2.imread(args.scribbles, cv2.IMREAD_COLOR) / 255.0
         alpha = closed_form_matting_with_scribbles(image, scribbles)
     elif args.trimap:
-        trimap = cv2.imread(args.trimap, cv2.IMREAD_GRAYSCALE)
+        trimap = cv2.imread(args.trimap, cv2.IMREAD_GRAYSCALE) / 255.0
         alpha = closed_form_matting_with_trimap(image, trimap)
     else:
         logging.error('Either trimap or scribbles must be specified.')
