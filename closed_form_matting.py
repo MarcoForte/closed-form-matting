@@ -152,10 +152,11 @@ def closed_form_matting_with_scribbles(image, scribbles, scribbles_confidence=10
     """Apply Closed-Form matting to given image using scribbles image."""
 
     assert image.shape == scribbles.shape, 'scribbles must have exactly same shape as image.'
-    consts_map = np.sum(abs(image - scribbles), axis=-1) > 0.001
+    prior = np.sign(np.sum(scribbles - image, axis=2)) / 2 + 0.5
+    consts_map = prior != 0.5
     return closed_form_matting_with_prior(
         image,
-        scribbles[:, :, 0],
+        prior,
         scribbles_confidence * consts_map,
         consts_map
     )
