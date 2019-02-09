@@ -123,7 +123,7 @@ def closed_form_matting_with_prior(image, prior, prior_confidence, consts_map=No
                                             'to image.')
     assert image.shape[:2] == prior_confidence.shape, ('prior_confidence must be 2D matrix with '
                                                        'height and width equal to image.')
-    assert (consts_map is not None) or image.shape[:2] == consts_map.shape, (
+    assert (consts_map is None) or image.shape[:2] == consts_map.shape, (
         'consts_map must be 2D matrix with height and width equal to image.')
 
     logging.info('Computing Matting Laplacian.')
