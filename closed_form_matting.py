@@ -123,7 +123,7 @@ def closed_form_matting_with_prior(image, prior, prior_confidence, consts_map=No
                                             'to image.')
     assert image.shape[:2] == prior_confidence.shape, ('prior_confidence must be 2D matrix with '
                                                        'height and width equal to image.')
-    assert (consts_map is not None) or image.shape[:2] == consts_map.shape, (
+    assert (consts_map is None) or image.shape[:2] == consts_map.shape, (
         'consts_map must be 2D matrix with height and width equal to image.')
 
     logging.info('Computing Matting Laplacian.')
@@ -152,10 +152,11 @@ def closed_form_matting_with_scribbles(image, scribbles, scribbles_confidence=10
     """Apply Closed-Form matting to given image using scribbles image."""
 
     assert image.shape == scribbles.shape, 'scribbles must have exactly same shape as image.'
-    consts_map = np.sum(abs(image - scribbles), axis=-1) > 0.001
+    prior = np.sign(np.sum(scribbles - image, axis=2)) / 2 + 0.5
+    consts_map = prior != 0.5
     return closed_form_matting_with_prior(
         image,
-        scribbles[:, :, 0],
+        prior,
         scribbles_confidence * consts_map,
         consts_map
     )
