@@ -1,3 +1,4 @@
+#!/usr/bin/env python 
 """Implementation of Closed-Form Matting.
 
 This module implements natural image matting method described in:
