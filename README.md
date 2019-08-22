@@ -20,10 +20,10 @@ CLI inerface:
 
 ```bash
 # Scribbles input
-./closed_form_matting.py input_image.png -s scribbles_image.png  -o output_alpha.png
+./closed_form_matting.py ./testdata/source.png -s ./testdata/scribbles.png  -o output_alpha.png
 
 # Trimap input
-./closed_form_matting.py input_image.png -t scribbles_image.png  -o output_alpha.png
+./closed_form_matting.py ./testdata/source.png -t ./testdata/trimap.png  -o output_alpha.png
 
 # Add flag --solve-fg to compute foreground color and output RGBA image instead
 # of alpha.
