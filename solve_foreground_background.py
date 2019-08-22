@@ -1,3 +1,4 @@
+#!/usr/bin/env python 
 """Computes foreground and background images given source image and transparency map.
 
 This module implements foreground and background reconstruction method described in Section 7 of:
