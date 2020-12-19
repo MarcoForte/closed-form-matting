@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 
 import closed_form_matting
-from solve_foreground_background import solve_foreground_background
 
 class TestMatting(unittest.TestCase):
     def test_solution_close_to_original_implementation(self):
@@ -13,7 +12,7 @@ class TestMatting(unittest.TestCase):
         scribles = cv2.imread('testdata/scribbles.png', cv2.IMREAD_COLOR) / 255.0
 
         alpha = closed_form_matting.closed_form_matting_with_scribbles(image, scribles)
-        foreground, background = solve_foreground_background(image, alpha)
+        foreground, background = closed_form_matting.solve_foreground_background(image, alpha)
 
         matlab_alpha = cv2.imread('testdata/matlab_alpha.png', cv2.IMREAD_GRAYSCALE) / 255.0
         matlab_foreground = cv2.imread('testdata/matlab_foreground.png', cv2.IMREAD_COLOR) / 255.0

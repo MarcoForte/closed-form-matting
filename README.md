@@ -12,6 +12,15 @@ The repository also contains implementation of background/foreground reconstruct
 - numpy
 - opencv-python
 
+## Installation
+
+Clone this repository and install the closed-form-matting package via pip.
+
+```bash
+git clone https://github.com/MarcoForte/closed-form-matting.git
+cd closed-form-matting/
+pip install .
+```
 
 ## Usage
 
@@ -20,10 +29,10 @@ CLI inerface:
 
 ```bash
 # Scribbles input
-./closed_form_matting.py ./testdata/source.png -s ./testdata/scribbles.png  -o output_alpha.png
+closed-form-matting ./testdata/source.png -s ./testdata/scribbles.png  -o output_alpha.png
 
 # Trimap input
-./closed_form_matting.py ./testdata/source.png -t ./testdata/trimap.png  -o output_alpha.png
+closed-form-matting ./testdata/source.png -t ./testdata/trimap.png  -o output_alpha.png
 
 # Add flag --solve-fg to compute foreground color and output RGBA image instead
 # of alpha.
@@ -46,20 +55,20 @@ alpha = closed_form_matting.closed_form_matting_with_prior(
     image, prior, prior_confidence, optional_const_mask)
 
 # To get Matting Laplacian for image
-laplacian = compute_laplacian(image, optional_const_mask)
+laplacian = closed_form_matting.compute_laplacian(image, optional_const_mask)
 ```
 
 ### Foreground and Background Reconstruction
 CLI interface (requires opencv-python):
 
 ```bash
-./solve_foreground_background.py image.png alpha.png foreground.png background.png
+solve-foreground-background image.png alpha.png foreground.png background.png
 ```
 
 Python interface:
 
 ```python
-from solve_foreground_background import solve_foreground_background
+from closed_form_matting import solve_foreground_background
 ...
 foreground, background = solve_foreground_background(image, alpha)
 ```
