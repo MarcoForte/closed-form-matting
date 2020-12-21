@@ -195,7 +195,7 @@ def main():
         exit(-1)
 
     if args.solve_fg:
-        from solve_foreground_background import solve_foreground_background
+        from closed_form_matting.solve_foreground_background import solve_foreground_background
         foreground, _ = solve_foreground_background(image, alpha)
         output = np.concatenate((foreground, alpha[:, :, np.newaxis]), axis=2)
     else:
