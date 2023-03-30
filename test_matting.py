@@ -3,7 +3,7 @@ import unittest
 
 import cv2
 import numpy as np
-
+import time
 import closed_form_matting
 
 class TestMatting(unittest.TestCase):
@@ -29,9 +29,9 @@ class TestMatting(unittest.TestCase):
     def test_matting_with_trimap(self):
         image = cv2.imread('testdata/source.png', cv2.IMREAD_COLOR) / 255.0
         trimap = cv2.imread('testdata/trimap.png', cv2.IMREAD_GRAYSCALE) / 255.0
-
+        time_start = time.time()
         alpha = closed_form_matting.closed_form_matting_with_trimap(image, trimap)
-
+        print('time cost: ', time.time() - time_start)
         reference_alpha = cv2.imread('testdata/output_alpha.png', cv2.IMREAD_GRAYSCALE) / 255.0
 
         sad_alpha = np.mean(np.abs(alpha - reference_alpha))

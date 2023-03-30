@@ -46,7 +46,6 @@ from numpy.lib.stride_tricks import as_strided
 import scipy.sparse
 import scipy.sparse.linalg
 
-
 def _rolling_block(A, block=(3, 3)):
     """Applies sliding window to given matrix."""
     shape = (A.shape[0] - block[0] + 1, A.shape[1] - block[1] + 1) + block
@@ -54,7 +53,7 @@ def _rolling_block(A, block=(3, 3)):
     return as_strided(A, shape=shape, strides=strides)
 
 
-def compute_laplacian(img, mask=None, eps=10**(-7), win_rad=1):
+def compute_laplacian(img: np.ndarray, mask=None, eps: float =10**(-7), win_rad: int =1):
     """Computes Matting Laplacian for a given image.
 
     Args:
@@ -83,7 +82,7 @@ def compute_laplacian(img, mask=None, eps=10**(-7), win_rad=1):
         mask = cv2.dilate(
             mask.astype(np.uint8),
             np.ones((win_diam, win_diam), np.uint8)
-        ).astype(np.bool)
+        ).astype(bool)
         win_mask = np.sum(mask.ravel()[win_inds], axis=2)
         win_inds = win_inds[win_mask > 0, :]
     else:
@@ -95,15 +94,18 @@ def compute_laplacian(img, mask=None, eps=10**(-7), win_rad=1):
     win_mu = np.mean(winI, axis=1, keepdims=True)
     win_var = np.einsum('...ji,...jk ->...ik', winI, winI) / win_size - np.einsum('...ji,...jk ->...ik', win_mu, win_mu)
 
-    inv = np.linalg.inv(win_var + (eps/win_size)*np.eye(3))
-
-    X = np.einsum('...ij,...jk->...ik', winI - win_mu, inv)
-    vals = np.eye(win_size) - (1.0/win_size)*(1 + np.einsum('...ij,...kj->...ik', X, winI - win_mu))
+    A = win_var + (eps/win_size)*np.eye(3)
+    B = (winI - win_mu).transpose(0, 2, 1)
+    X = np.linalg.solve(A, B).transpose(0, 2, 1)
+    vals = np.eye(win_size) - (1.0/win_size)*(1 + X @ B)
 
     nz_indsCol = np.tile(win_inds, win_size).ravel()
     nz_indsRow = np.repeat(win_inds, win_size).ravel()
     nz_indsVal = vals.ravel()
     L = scipy.sparse.coo_matrix((nz_indsVal, (nz_indsRow, nz_indsCol)), shape=(h*w, h*w))
+
+    # rewrite L in CSR format
+    L = scipy.sparse.csr_matrix((nz_indsVal, nz_indsCol, np.arange(0, nz_indsVal.shape[0] + 1, win_size)), shape=(h*w, h*w))
     return L
 
 
@@ -129,7 +131,6 @@ def closed_form_matting_with_prior(image, prior, prior_confidence, consts_map=No
 
     logging.info('Computing Matting Laplacian.')
     laplacian = compute_laplacian(image, ~consts_map if consts_map is not None else None)
-
     confidence = scipy.sparse.diags(prior_confidence.ravel())
     logging.info('Solving for alpha.')
     solution = scipy.sparse.linalg.spsolve(
@@ -197,7 +198,7 @@ def main():
     if args.solve_fg:
         from closed_form_matting.solve_foreground_background import solve_foreground_background
         foreground, _ = solve_foreground_background(image, alpha)
-        output = np.concatenate((foreground, alpha[:, :, np.newaxis]), axis=2)
+        output = np.dstack((foreground, alpha))
     else:
         output = alpha
 
